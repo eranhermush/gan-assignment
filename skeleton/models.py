@@ -273,11 +273,16 @@ class PatchDiscriminator(nn.Module):
         # TODO 2.2 – define the layers.
         # Target output shape for a 64x64 input: (BS, 1, 4, 4).
         # ---------------------------------------------------------------
-        self.conv1 = None
-        self.conv2 = None
-        self.conv3 = None
-        self.conv4 = None
-        self.conv5 = None
+        # Same as DCDiscriminator but with the final 4x4->1x1 layer removed,
+        # so the output keeps its 4x4 spatial resolution.
+        self.conv1 = conv(3, conv_dim // 2, kernel_size=4, stride=2, padding=1,
+                          norm=norm, activ='relu')
+        self.conv2 = conv(conv_dim // 2, conv_dim, kernel_size=4, stride=2,
+                          padding=1, norm=norm, activ='relu')
+        self.conv3 = conv(conv_dim, conv_dim * 2, kernel_size=4, stride=2,
+                          padding=1, norm=norm, activ='relu')
+        self.conv4 = conv(conv_dim * 2, 1, kernel_size=4, stride=2, padding=1,
+                          norm=None, activ=None)
 
     def forward(self, x):
         """
@@ -292,7 +297,11 @@ class PatchDiscriminator(nn.Module):
         # ---------------------------------------------------------------
         # TODO 2.2 – forward pass through your layers.
         # ---------------------------------------------------------------
-        pass
+        out = self.conv1(x)
+        out = self.conv2(out)
+        out = self.conv3(out)
+        out = self.conv4(out)
+        return out
 
 
 # ---------------------------------------------------------------------------
