@@ -158,19 +158,20 @@ def training_loop(train_dataloader, opts):
             # ------------------------------------------------------------------
             # TODO 1.4 – compute D_real_loss using real_images_processed.
             # ------------------------------------------------------------------
-            D_real_loss = None  # TODO
+            batch_size = real_images.size(0)
+            D_real_loss = torch.mean((D(real_images_processed) - 1) ** 2)
 
             # 2. Sample a batch of noise vectors z.
             # ------------------------------------------------------------------
             # TODO 1.4 – sample noise.
             # ------------------------------------------------------------------
-            noise = None  # TODO
+            noise = sample_noise(batch_size, opts.noise_size)
 
             # 3. Generate fake images G(z).
             # ------------------------------------------------------------------
             # TODO 1.4 – generate fake_images from the noise.
             # ------------------------------------------------------------------
-            fake_images = None  # TODO
+            fake_images = G(noise)
 
             # 4. Discriminator loss on fake images: (D(G(z)))^2
             # Note:
@@ -182,7 +183,7 @@ def training_loop(train_dataloader, opts):
             # ------------------------------------------------------------------
             # TODO 1.4 – compute D_fake_loss using fake_images_processed.
             # ------------------------------------------------------------------
-            D_fake_loss = None  # TODO
+            D_fake_loss = torch.mean(D(fake_images_processed) ** 2)
 
             # 5. Total discriminator loss and update step.
             D_total_loss = (D_real_loss + D_fake_loss) / 2
@@ -198,13 +199,13 @@ def training_loop(train_dataloader, opts):
             # ------------------------------------------------------------------
             # TODO 1.4 – sample new noise. Do not reuse the discriminator noise.
             # ------------------------------------------------------------------
-            noise = None  # TODO
+            noise = sample_noise(batch_size, opts.noise_size)
 
             # 2. Generate fake images G(z).
             # ------------------------------------------------------------------
             # TODO 1.4 – generate fake_images from the noise.
             # ------------------------------------------------------------------
-            fake_images = None  # TODO
+            fake_images = G(noise)
 
             # 3. Generator loss: (D(G(z)) - 1)^2
             fake_images_processed = prepare_images(fake_images, opts)
@@ -212,7 +213,7 @@ def training_loop(train_dataloader, opts):
             # ------------------------------------------------------------------
             # TODO 1.4 – compute G_loss using fake_images_processed.
             # ------------------------------------------------------------------
-            G_loss = None  # TODO
+            G_loss = torch.mean((D(fake_images_processed) - 1) ** 2)
 
             g_optimizer.zero_grad()
             G_loss.backward()

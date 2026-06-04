@@ -149,15 +149,21 @@ class DCGenerator(nn.Module):
         # to up_conv and choose kernel_size and padding accordingly.
         # ---------------------------------------------------------------
 
-        self.up_conv1 = None
-
-        self.up_conv2 = None
-
-        self.up_conv3 = None
-
-        self.up_conv4 = None
-
-        self.up_conv5 = None
+        self.up_conv1 = up_conv(noise_size, conv_dim * 4, kernel_size=4,
+                                stride=1, padding=3, scale_factor=1,
+                                norm='instance', activ='relu')
+        self.up_conv2 = up_conv(conv_dim * 4, conv_dim * 2, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm='instance', activ='relu')
+        self.up_conv3 = up_conv(conv_dim * 2, conv_dim, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm='instance', activ='relu')
+        self.up_conv4 = up_conv(conv_dim, conv_dim // 2, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm='instance', activ='relu')
+        self.up_conv5 = up_conv(conv_dim // 2, 3, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm=None, activ='tanh')
 
     def forward(self, z):
         """
@@ -169,10 +175,12 @@ class DCGenerator(nn.Module):
         ------
             out: (BS, channels, image_width, image_height)
         """
-        # ---------------------------------------------------------------
-        # TODO 1.3 – implement the forward pass.
-        # ---------------------------------------------------------------
-        pass
+        out = self.up_conv1(z)
+        out = self.up_conv2(out)
+        out = self.up_conv3(out)
+        out = self.up_conv4(out)
+        out = self.up_conv5(out)
+        return out
 
 
 # ---------------------------------------------------------------------------
