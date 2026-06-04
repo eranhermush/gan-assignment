@@ -213,15 +213,27 @@ class CycleGenerator(nn.Module):
         # ---------------------------------------------------------------
 
         # Encoder
-        self.conv1 = None
-        self.conv2 = None
+        self.conv1 = conv(3, conv_dim // 2, kernel_size=4, stride=2, padding=1,
+                          norm=norm, init_zero_weights=init_zero_weights,
+                          activ='relu')
+        self.conv2 = conv(conv_dim // 2, conv_dim, kernel_size=4, stride=2,
+                          padding=1, norm=norm,
+                          init_zero_weights=init_zero_weights, activ='relu')
 
         # Transform (3 residual blocks)
-        self.resnet_block = None
+        self.resnet_block = nn.Sequential(
+            ResnetBlock(conv_dim, norm=norm, activ='relu'),
+            ResnetBlock(conv_dim, norm=norm, activ='relu'),
+            ResnetBlock(conv_dim, norm=norm, activ='relu'),
+        )
 
         # Decoder
-        self.up_conv1 = None
-        self.up_conv2 = None
+        self.up_conv1 = up_conv(conv_dim, conv_dim // 2, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm=norm, activ='relu')
+        self.up_conv2 = up_conv(conv_dim // 2, 3, kernel_size=3,
+                                stride=1, padding=1, scale_factor=2,
+                                norm=None, activ='tanh')
 
     def forward(self, x):
         """
@@ -236,7 +248,12 @@ class CycleGenerator(nn.Module):
         # ---------------------------------------------------------------
         # TODO 2.1 – pass x through encoder -> resnet_block -> decoder.
         # ---------------------------------------------------------------
-        pass
+        out = self.conv1(x)
+        out = self.conv2(out)
+        out = self.resnet_block(out)
+        out = self.up_conv1(out)
+        out = self.up_conv2(out)
+        return out
 
 
 class PatchDiscriminator(nn.Module):
