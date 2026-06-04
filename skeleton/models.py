@@ -99,11 +99,16 @@ class DCDiscriminator(nn.Module):
         # TODO 1.2b – define conv2 through conv5.
         # ---------------------------------------------------------------
 
-        self.conv1 = None
-        self.conv2 = None
-        self.conv3 = None
-        self.conv4 = None
-        self.conv5 = None
+        self.conv1 = conv(3, conv_dim // 2, kernel_size=4, stride=2, padding=1,
+                          norm=norm, activ='relu')
+        self.conv2 = conv(conv_dim // 2, conv_dim, kernel_size=4, stride=2, padding=1,
+                          norm=norm, activ='relu')
+        self.conv3 = conv(conv_dim, conv_dim * 2, kernel_size=4, stride=2, padding=1,
+                          norm=norm, activ='relu')
+        self.conv4 = conv(conv_dim * 2, conv_dim * 4, kernel_size=4, stride=2, padding=1,
+                          norm=norm, activ='relu')
+        self.conv5 = conv(conv_dim * 4, 1, kernel_size=4, stride=1, padding=0,
+                          norm=None, activ=None)
 
     def forward(self, x):
         """
@@ -115,11 +120,12 @@ class DCDiscriminator(nn.Module):
         ------
             out: (BS, 1, 1, 1)  scalar score per image
         """
-
-        # ---------------------------------------------------------------
-        # TODO 1.2b - implement the forward pass.
-        # ---------------------------------------------------------------
-        pass
+        out = self.conv1(x)
+        out = self.conv2(out)
+        out = self.conv3(out)
+        out = self.conv4(out)
+        out = self.conv5(out)
+        return out
 
 class DCGenerator(nn.Module):
     """Generator: maps a noise vector z -> 64x64 RGB image.

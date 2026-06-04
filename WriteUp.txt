@@ -1,0 +1,22 @@
+1.2a Padding
+
+We downsample the spatial dimension by a factor of 2, with kernel size K = 4
+and stride S = 2. We need to find the padding P.
+
+The standard output-size formula for a 2D convolution is:
+    Hout = (Hin - K + 2P) / S + 1
+
+Since we downsample by a factor of 2, we require Hout = Hin / 2. Substituting
+K = 4 and S = 2:
+
+    Hin / 2 = (Hin - 4 + 2P) / 2 + 1
+    Hin     = (Hin - 4 + 2P) + 2          (multiply both sides by 2)
+    Hin     = Hin - 2 + 2P
+    0       = -2 + 2P
+    P       = 1
+
+Sanity check with Hin = 64:
+    Hout = (64 - 4 + 2*1) / 2 + 1 = 62 / 2 + 1 = 31 + 1 = 32   ✓
+
+Therefore, the padding is P = 1.
+
