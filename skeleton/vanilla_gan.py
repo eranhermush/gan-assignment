@@ -118,6 +118,8 @@ def prepare_images(images, opts):
     Complete this function according to the DiffAugment instructions
     in the assignment.
     """
+    if opts.use_diffaug:
+        images = DiffAugment(images, policy=policy)
     return images
 
 
