@@ -254,7 +254,7 @@ def training_loop(dataloader_X, dataloader_Y, opts):
             # ------------------------------------------------------------------
             # 3. Cycle consistency loss (Y -> X -> Y)
             reconstructed_Y = G_XtoY(fake_X)
-            cycle_yxy_loss = torch.mean((images_Y - reconstructed_Y) ** 2)
+            cycle_yxy_loss = torch.mean(torch.abs(images_Y - reconstructed_Y))
 
             g_loss += opts.lambda_cycle * cycle_yxy_loss
 
@@ -287,7 +287,7 @@ def training_loop(dataloader_X, dataloader_Y, opts):
             # ------------------------------------------------------------------
             # 6. Cycle consistency loss (X -> Y -> X)
             reconstructed_X = G_YtoX(fake_Y)
-            cycle_xyx_loss = torch.mean((images_X - reconstructed_X) ** 2)
+            cycle_xyx_loss = torch.mean(torch.abs(images_X - reconstructed_X))
 
             g_loss += opts.lambda_cycle * cycle_xyx_loss
 
