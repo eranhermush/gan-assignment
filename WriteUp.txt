@@ -22,3 +22,7 @@ Therefore, the padding is P = 1.
 
 1.7
 https://wandb.ai/eran-hermosh-tel-aviv-university/assignment1-dcgan/reports/assignment1-dcgan-report--VmlldzoxNzExOTUzOA?accessToken=gs758bb1q3932kfkc2ly8810st86o1e19qzipy05tdi3ube63eu1mzy0bxma56re
+
+
+2.6
+https://wandb.ai/eran-hermosh-tel-aviv-university/assignment1-cyclegan/reports/CycleGAN--VmlldzoxNzIxOTU4Ng
